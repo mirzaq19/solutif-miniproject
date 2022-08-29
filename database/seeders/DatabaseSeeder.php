@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         Student::factory(40)->create();
         Course::factory(30)->create();
+        $this->call(TakeCourse::class);
     }
 }
