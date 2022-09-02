@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('username');
+            $table->string('username')->unique();
             $table->enum('role', ['admin', 'student'])->default('student');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
