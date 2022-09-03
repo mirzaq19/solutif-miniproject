@@ -15,8 +15,8 @@ class CreateCourseStudentTable extends Migration
     {
         Schema::create('course_student', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('course_id')->constrained();
-            $table->foreignUuid('student_id')->constrained();
+            $table->foreignUuid('course_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
             $table->integer('semester');
             $table->string('grade')->nullable();
             $table->timestamps();
