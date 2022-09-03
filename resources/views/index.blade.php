@@ -1,5 +1,5 @@
 @extends('layout')
-@section('title', 'Home')
+@section('title', 'SIAKAD Kampus')
 @section('content')
     <div class="container min-h-screen lg:h-min mx-auto px-4 py-10 flex flex-col md:flex-row md:justify-between gap-y-4 md:gap-x-4">
         <div>
@@ -12,10 +12,14 @@
             <p class="text-sm lg:text-base mb-2">Silahkan masuk terlebih dahulu menggunakan email dan password yang sudah terdaftar</p>
             <div class="flex flex-col items-center justify-center mx-auto">
                 <div class="w-full bg-white rounded-lg">
-                    <form class="space-y-4 md:space-y-6" action="#">
+                    <form class="space-y-4 md:space-y-6" action="{{route('auth')}}" method="POST">
+                        @csrf
                         <div>
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
-                            <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="email@example.com" required>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email atau Username</label>
+                            <input type="text" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="email@example.com" required>
+                            @error('email')
+                                <p class="mt-2 text-red-500 text-xs">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
@@ -27,17 +31,23 @@
                                     </button>
                                 </span>
                             </div>
+                            @error('password')
+                                <p class="mt-2 text-red-500 text-xs">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-start">
                                 <div class="flex items-center h-5">
-                                    <input id="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300" required>
+                                    <input id="remember" name="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300">
                                 </div>
                                 <div class="ml-3 text-sm">
                                     <label for="remember" class="text-gray-500">Remember me</label>
                                 </div>
                             </div>
                         </div>
+                        @error('invalid')
+                            <p class="text-red-500 text-xs">{{ $message }}</p>
+                        @enderror
                         <button type="submit" class="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Masuk</button>
                     </form>
                 </div>

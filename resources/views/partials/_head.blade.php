@@ -6,4 +6,4 @@
 <link rel="icon" type="image/png" sizes="16x16" href="{{asset('favicon-16x16.png')}}">
 <link rel="manifest" href="{{asset('site.webmanifest')}}">
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/fbd4858647.js" crossorigin="anonymous"></script>
