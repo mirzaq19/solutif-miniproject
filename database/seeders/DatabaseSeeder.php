@@ -16,7 +16,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Student::factory(40)->create();
+//        User::factory(40)
+//            ->has(
+//                Student::factory()
+//                    ->count(1)
+//                    ->state(function (array $attributes, User $user) {
+//                        return ['user_id' => $user->id,'name' => $user->name];
+//            }))->create();
+        $students = Student::factory(40)->create();
         Course::factory(30)->create();
         $this->call(TakeCourse::class);
     }

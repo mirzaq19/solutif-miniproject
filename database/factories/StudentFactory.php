@@ -22,14 +22,26 @@ class StudentFactory extends Factory
      */
     public function definition()
     {
+        $name = $this->faker->name;
         return [
-            'name' => $this->faker->name,
-            'user_id' => User::factory()->create()->id,
+            'name' => $name,
+            'user_id' => User::factory()->create([
+                'name' => $name,
+            ])->id,
             'nim' => $this->faker->unique()->numerify('##########'),
             'gender' => ['male','female'][rand(0,1)],
             'address' => $this->faker->address,
             'major' => ['Teknik Informatika', 'Teknologi Informasi', 'Sistem Informasi'][rand(0,2)],
             'year' => rand(2019,2022)
         ];
+    }
+
+    public function WithoutUser(): StudentFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'user_id' => null,
+            ];
+        });
     }
 }
