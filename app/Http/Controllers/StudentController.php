@@ -3,19 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Application|Factory|View
+     * @param Request $request
+     * @return View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $students = Student::query();
 
@@ -35,22 +41,58 @@ class StudentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('dashboard.student.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'username' => 'required',
+            'password' => 'required|min:6|max:255|confirmed',
+            'nim' => 'required',
+            'gender' => 'required|in:male,female',
+            'address' => 'required',
+            'major' => 'required',
+            'year' => 'required|int',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->input('password')),
+                'role' => 'student',
+            ]);
+
+            $user->student()->create([
+                'name' => $request->input('name'),
+                'nim' => $request->input('nim'),
+                'gender' => $request->input('gender'),
+                'address' => $request->input('address'),
+                'major' => $request->input('major'),
+                'year' => $request->input('year'),
+            ]);
+
+            DB::commit();
+            return redirect()->route('student.index')->with('success', 'Data mahasiswa berhasil ditambahkan');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -78,7 +120,7 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

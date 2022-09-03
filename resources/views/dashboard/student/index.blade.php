@@ -2,19 +2,32 @@
 @section('title', 'Daftar Mahasiswa')
 @section('content')
     <div class="container min-h-screen lg:h-min mx-auto px-4 py-10">
-        <h1 class="font-bold text-2xl mb-6">Daftar Mahasiswa</h1>
-        <form action="{{ route('student.index') }}" method="GET" class="mb-6">
-            <div class="flex flex-col lg:flex-row gap-4 lg:w-1/3 lg:ml-auto">
-                <div class="lg:w-3/4">
-                    <label>
-                        <input type="text" name="keyword" placeholder="Cari mahasiswa..." class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                    </label>
-                </div>
-                <div class="lg:w-1/4">
-                    <button type="submit" class="w-full bg-indigo-500 text-white rounded-lg px-4 py-2 hover:bg-indigo-600 transition-colors duration-300">Cari</button>
-                </div>
+        @if (session('success'))
+            <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+                <span class="font-medium">Berhasil!</span> {{ session('success') }}
             </div>
-        </form>
+        @endif
+        <h1 class="font-bold text-2xl mb-6">Daftar Mahasiswa</h1>
+        <div class="flex flex-col-reverse lg:flex-row mb-6 lg:justify-between lg:text-left">
+            <div class="flex lg:w-1/6">
+                <a class="text-center align-middle lg:inline-block w-full bg-indigo-500 text-white rounded-lg px-4 py-2 hover:bg-indigo-600 transition-colors duration-300" href="{{route('student.create')}}">Tambah mahasiswa</a>
+            </div>
+            <div class="mb-6 lg:mb-0 lg:w-1/3">
+                <form action="{{ route('student.index') }}" method="GET">
+                    <div class="flex flex-col lg:flex-row gap-4">
+                        <div class="lg:w-3/4">
+                            <label>
+                                <input type="text" name="keyword" placeholder="Cari mahasiswa..." class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </label>
+                        </div>
+                        <div class="lg:w-1/4">
+                            <button type="submit" class="w-full bg-indigo-500 text-white rounded-lg px-4 py-2 hover:bg-indigo-600 transition-colors duration-300">Cari</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="overflow-x-auto relative shadow sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-gray-700 uppercase bg-gray-200">
