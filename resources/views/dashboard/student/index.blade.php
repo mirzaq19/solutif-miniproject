@@ -29,7 +29,7 @@
         </div>
 
         <div class="overflow-x-auto relative shadow sm:rounded-lg">
-            <table class="w-full text-sm text-left text-gray-500">
+            <table class="w-full text-sm text-left text-gray-700">
                 <thead class="text-gray-700 uppercase bg-gray-200">
                 <tr class="text-center">
                     <th scope="col" class="py-4 px-6">
@@ -71,10 +71,10 @@
                             {{ $student->year }}
                         </td>
                         <td class="py-4 px-6 justify-center flex flex-col lg:flex-row">
-                            <a href="{{route('student.show',$student)}}"  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                            <a href="{{ route('student.show',$student) }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                                 <i class="fas fa-info-circle"></i> Detail
                             </a>
-                            <a href="#" class="focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="{{ route('student.edit',$student) }}" class="focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i class="fas fa-edit"></i> Edit</a>
                             <a href="#" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i class="fas fa-trash"></i> Hapus</a>
                         </td>
                     </tr>

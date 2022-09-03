@@ -111,24 +111,57 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Student $student
+     * @return View
      */
-    public function edit($id)
+    public function edit(Student $student): View
     {
-        //
+        $student->load('user');
+        return view('dashboard.student.edit', compact('student'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param  int  $id
-     * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Student $student): RedirectResponse
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $student->user->id,
+            'username' => 'required|unique:users,username,' . $student->user->id,
+            'password' => 'nullable|min:6|max:255|confirmed',
+            'nim' => 'required',
+            'gender' => 'required|in:male,female',
+            'address' => 'required',
+            'major' => 'required',
+            'year' => 'required|int',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $student->user()->update([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'username' => $request->input('username'),
+                'password' => $request->input('password') ? Hash::make($request->input('password')) : $student->user->password,
+            ]);
+
+            $student->update([
+                'name' => $request->input('name'),
+                'nim' => $request->input('nim'),
+                'gender' => $request->input('gender'),
+                'address' => $request->input('address'),
+                'major' => $request->input('major'),
+                'year' => $request->input('year'),
+            ]);
+
+            DB::commit();
+            return redirect()->route('student.index')->with('success', 'Data mahasiswa berhasil diubah');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
