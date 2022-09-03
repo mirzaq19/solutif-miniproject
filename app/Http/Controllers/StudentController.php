@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\User;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -167,11 +165,21 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Student $student
+     * @return RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Student $student): RedirectResponse
     {
-        //
+        DB::beginTransaction();
+        try {
+            $user = User::find($student->user_id);
+            $user->delete();
+
+            DB::commit();
+            return redirect()->route('student.index')->with('success', 'Data mahasiswa berhasil dihapus');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }
