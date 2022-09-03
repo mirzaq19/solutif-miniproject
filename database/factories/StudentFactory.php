@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StudentFactory extends Factory
@@ -23,6 +24,7 @@ class StudentFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'user_id' => User::factory()->create()->id,
             'nim' => $this->faker->unique()->numerify('##########'),
             'gender' => ['male','female'][rand(0,1)],
             'address' => $this->faker->address,
