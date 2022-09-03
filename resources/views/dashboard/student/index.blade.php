@@ -10,7 +10,7 @@
         <h1 class="font-bold text-2xl mb-6">Daftar Mahasiswa</h1>
         <div class="flex flex-col-reverse lg:flex-row mb-6 lg:justify-between lg:text-left">
             <div class="flex lg:w-1/6">
-                <a class="text-center align-middle lg:inline-block w-full bg-indigo-500 text-white rounded-lg px-4 py-2 hover:bg-indigo-600 transition-colors duration-300" href="{{route('student.create')}}">Tambah mahasiswa</a>
+                <a class="text-center align-middle lg:inline-block w-full bg-gray-700 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition-colors duration-300" href="{{route('student.create')}}">Tambah mahasiswa</a>
             </div>
             <div class="mb-6 lg:mb-0 lg:w-1/3">
                 <form action="{{ route('student.index') }}" method="GET">
@@ -71,6 +71,9 @@
                             {{ $student->year }}
                         </td>
                         <td class="py-4 px-6 justify-center flex flex-col lg:flex-row">
+                            <a href="{{route('student.show',$student)}}"  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                <i class="fas fa-info-circle"></i> Detail
+                            </a>
                             <a href="#" class="focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i class="fas fa-edit"></i> Edit</a>
                             <a href="#" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i class="fas fa-trash"></i> Hapus</a>
                         </td>
