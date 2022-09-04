@@ -25,12 +25,14 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class,'index'])->name('dashboard.index');
-        Route::resource('student', StudentController::class);
-        Route::resource('course', CourseController::class);
-        Route::prefix('student')->group(function () {
-            Route::post('{student}/take-course', [TakeCourseController::class, 'store'])->name('student.take-course.store');
-            Route::put('{student}/take-course/{course}', [TakeCourseController::class, 'update'])->name('student.take-course.update');
-            Route::delete('{student}/take-course/{course}', [TakeCourseController::class, 'destroy'])->name('student.take-course.destroy');
+        Route::middleware('admin')->group(function (){
+            Route::resource('student', StudentController::class);
+            Route::resource('course', CourseController::class);
+            Route::prefix('student')->group(function () {
+                Route::post('{student}/take-course', [TakeCourseController::class, 'store'])->name('student.take-course.store');
+                Route::put('{student}/take-course/{course}', [TakeCourseController::class, 'update'])->name('student.take-course.update');
+                Route::delete('{student}/take-course/{course}', [TakeCourseController::class, 'destroy'])->name('student.take-course.destroy');
+            });
         });
     });
 });
