@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Student;
 use App\Models\User;
 use Exception;
@@ -102,8 +103,10 @@ class StudentController extends Controller
      */
     public function show(Student $student): View
     {
-        $student->load('user');
-        return view('dashboard.student.show', compact('student'));
+        $student->load('user','courses');
+        $courses = Course::orderBy('name')->get();
+        $ownedCourses = $student->courses->sortBy('pivot.semester');
+        return view('dashboard.student.show', compact('student','courses','ownedCourses'));
     }
 
     /**
