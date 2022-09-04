@@ -104,7 +104,7 @@ class StudentController extends Controller
     public function show(Student $student): View
     {
         $student->load('user','courses');
-        $courses = Course::orderBy('name')->get();
+        $courses = Course::whereNotIn('id', $student->courses->pluck('id'))->get();
         $ownedCourses = $student->courses->sortBy('pivot.semester');
         return view('dashboard.student.show', compact('student','courses','ownedCourses'));
     }

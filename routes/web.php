@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TakeCourseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,5 +27,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [DashboardController::class,'index'])->name('dashboard.index');
         Route::resource('student', StudentController::class);
         Route::resource('course', CourseController::class);
+        Route::prefix('student')->group(function () {
+            Route::post('{student}/take-course', [TakeCourseController::class, 'store'])->name('student.take-course.store');
+        });
     });
 });

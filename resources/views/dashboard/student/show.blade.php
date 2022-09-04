@@ -8,6 +8,12 @@
                 <span class="font-medium">Gagal!</span> {{ session('error') }}
             </div>
         @endif
+        @if (session('success'))
+            <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+                 role="alert">
+                <span class="font-medium">Berhasil!</span> {{ session('success') }}
+            </div>
+        @endif
         <a href="{{route('student.index')}}"
            class="inline-block text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i
                 class="fas fa-arrow-left"></i> Kembali</a>
@@ -126,34 +132,39 @@
                 </div>
                 <div class="overflow-x-auto">
                     <h3 class="font-semibold ml-4 mt-4">Ambil mata kuliah baru</h3>
-                    <div class="flex flex-row gap-4 p-4 min-w-fit">
-                        <div class="flex flex-col w-1/6 gap-y-2">
-                            <label for="course" class="text-sm md:text-base">Mata kuliah</label>
-                            <select name="course" id="course"
-                                    class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                                <option value="" disabled selected>Pilih mata kuliah</option>
-                                @foreach ($courses as $course)
-                                    <option value="{{ $course->id }}">{{ $course->name }} - {{ $course->credit }} Sks</option>
-                                @endforeach
-                            </select>
+                    <form action="{{ route('student.take-course.store',$student) }}" method="POST">
+                        @csrf
+                        <div class="flex flex-row gap-4 p-4 min-w-fit">
+                            <div class="flex flex-col w-1/6 gap-y-2">
+                                <label for="course_id" class="text-sm md:text-base">Mata kuliah</label>
+                                <select name="course_id" id="course_id"
+                                        class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    <option value="" disabled selected>Pilih mata kuliah</option>
+                                    @foreach ($courses as $course)
+                                        <option value="{{ $course->id }}">{{ $course->name }} - {{ $course->credit }}
+                                            Sks
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex flex-col w-1/12 gap-y-2">
+                                <label for="semester" class="text-sm md:text-base">Semester</label>
+                                <input type="number" name="semester" id="semester"
+                                       class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+                            <div class="flex flex-col w-1/12 gap-y-2">
+                                <label for="grade" class="text-sm md:text-base">Nilai</label>
+                                <input type="text" name="grade" id="grade"
+                                       class="placeholder:text-sm md:placeholder:text-base border rounded lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+                            <div class="flex flex-col w-1/12 justify-end">
+                                <button type="submit"
+                                        class="text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 font-medium rounded text-sm px-4 py-2.5 text-center">
+                                    Simpan
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex flex-col w-1/12 gap-y-2">
-                            <label for="semester" class="text-sm md:text-base">Semester</label>
-                            <input type="number" name="semester" id="semester"
-                                   class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                        </div>
-                        <div class="flex flex-col w-1/12 gap-y-2">
-                            <label for="grade" class="text-sm md:text-base">Nilai</label>
-                            <input type="text" name="grade" id="grade"
-                                   class="placeholder:text-sm md:placeholder:text-base border rounded lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                        </div>
-                        <div class="flex flex-col w-1/12 justify-end">
-                            <button type="button"
-                                    class="text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 font-medium rounded text-sm px-4 py-2.5 text-center">
-                                Simpan
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                     <hr>
                     @foreach($ownedCourses as $course)
                         <div class="flex flex-row gap-4 p-4 min-w-fit">
