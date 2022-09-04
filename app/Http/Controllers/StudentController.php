@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Student;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -15,6 +16,20 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
+    /**
+     * @param Student $student
+     * @return Response
+     */
+    public function report(Student $student): Response
+    {
+        $student->load('courses', 'user');
+        $ownedCourses = $student->courses->sortBy('pivot.semester');;
+
+        $pdf = Pdf::loadView('dashboard.summary', ['student' => $student, 'ownedCourses' => $ownedCourses]);
+
+        return $pdf->download('report-'.$student->nim.'.pdf');
+    }
+
     /**
      * Display a listing of the resource.
      *
