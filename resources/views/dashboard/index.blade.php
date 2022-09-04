@@ -39,7 +39,7 @@
                             <p class="text-gray-500 text-xs  md:text-sm">Buah</p>
                         </div>
                     </div>
-                    <a href="#" class="font-semibold text-sm md:text-base hover:text-indigo-700 transition-colors duration-300">Lihat detail</a>
+                    <a href="{{ route('course.index') }}" class="font-semibold text-sm md:text-base hover:text-indigo-700 transition-colors duration-300">Lihat detail</a>
                 </div>
             </div>
         </div>
