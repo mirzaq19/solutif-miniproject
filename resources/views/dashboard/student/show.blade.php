@@ -131,107 +131,119 @@
                         Data Pengambilan Mata Kuliah </h3>
                 </div>
                 <div class="overflow-x-auto">
-                    <h3 class="font-semibold ml-4 mt-4">Ambil mata kuliah baru</h3>
-                    <form action="{{ route('student.take-course.store',$student) }}" method="POST">
-                        @csrf
-                        <div class="flex flex-row gap-4 p-4 min-w-fit">
-                            <div class="flex flex-col w-1/6 gap-y-2">
-                                <label for="course_id" class="text-sm md:text-base">Mata kuliah</label>
-                                <select name="course_id" id="course_id"
-                                        class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                                    <option value="" disabled selected>Pilih mata kuliah</option>
-                                    @foreach ($courses as $course)
-                                        <option value="{{ $course->id }}">{{ $course->name }} - {{ $course->credit }}
-                                            Sks
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="flex flex-col w-1/12 gap-y-2">
-                                <label for="semester" class="text-sm md:text-base">Semester</label>
-                                <input type="number" name="semester" id="semester"
-                                       class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            </div>
-                            <div class="flex flex-col w-1/12 gap-y-2">
-                                <label for="grade" class="text-sm md:text-base">Nilai</label>
-                                <input type="text" name="grade" id="grade"
-                                       class="placeholder:text-sm md:placeholder:text-base border rounded lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            </div>
-                            <div class="flex flex-col w-1/12 justify-end">
-                                <button type="submit"
-                                        class="text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 font-medium rounded text-sm px-4 py-2.5 text-center">
-                                    Simpan
-                                </button>
-                            </div>
+                    <div class="min-w-fit">
+                        <div class="bg-gray-100 p-4">
+                            <h3 class="font-semibold">Ambil mata kuliah baru</h3>
                         </div>
-                    </form>
-                    <hr>
-                    @foreach($ownedCourses as $course)
-                        <div class="flex flex-row gap-4 p-4 min-w-fit">
-                            <div class="flex flex-col w-1/4 gap-y-2">
-                                <label for="name" class="text-sm md:text-base">Nama Mata Kuliah</label>
-                                <input disabled type="text" name="name" id="name" placeholder="Budi"
-                                       value="{{ $course->name }}"
-                                       class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <form action="{{ route('student.take-course.store',$student) }}" method="POST">
+                            @csrf
+                            <div class="flex flex-row gap-4 p-4">
+                                <div class="flex flex-col w-1/4 gap-y-2">
+                                    <label for="course_id" class="text-sm md:text-base">Mata kuliah</label>
+                                    <select name="course_id" id="course_id"
+                                            class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        <option value="" disabled selected>Pilih mata kuliah</option>
+                                        @foreach ($courses as $course)
+                                            <option value="{{ $course->id }}">{{ $course->name }}
+                                                - {{ $course->credit }}
+                                                Sks
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex flex-col w-1/4 gap-y-2">
+                                    <label for="semester" class="text-sm md:text-base">Semester</label>
+                                    <input type="number" name="semester" id="semester"
+                                           class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                </div>
+                                <div class="flex flex-col w-1/4 gap-y-2">
+                                    <label for="grade" class="text-sm md:text-base">Nilai</label>
+                                    <input type="text" name="grade" id="grade"
+                                           class="placeholder:text-sm md:placeholder:text-base border rounded lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                </div>
+                                <div class="flex flex-col w-1/4 justify-end">
+                                    <button type="submit"
+                                            class="text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 font-medium rounded text-sm px-4 py-2.5 text-center">
+                                        Simpan
+                                    </button>
+                                </div>
                             </div>
-                            <div class="flex flex-col w-1/5 gap-y-2">
-                                <label for="sks" class="text-sm md:text-base">SKS</label>
-                                <input disabled type="number" name="sks" id="sks"
-                                       value="{{ $course->credit }}"
-                                       class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            </div>
-                            <div class="flex flex-col w-1/5 gap-y-2">
-                                <label for="semester" class="text-sm md:text-base">Semester</label>
-                                <input disabled type="number" name="semester" id="semester"
-                                       value="{{ $course->pivot->semester }}"
-                                       class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            </div>
-                            <div class="flex flex-col w-1/5 gap-y-2">
-                                <label for="grade" class="text-sm md:text-base">Nilai</label>
-                                <input disabled type="text" name="grade" id="grade"
-                                       value="{{ $course->pivot->grade }}"
-                                       class="placeholder:text-sm md:placeholder:text-base border rounded lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            </div>
-                            <div class="flex flex-col w-1/5 justify-end">
-                                <button type="button"
-                                        class="bg-yellow-400 hover:bg-yellow-500bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded text-sm px-4 py-2.5 text-center">
-                                    <i class="fas fa-edit"></i> Edit Data
-                                </button>
-                            </div>
-                        </div>
+                        </form>
                         <hr>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <div class="bg-gray-100 p-4">
+                        <h3 class="font-semibold">Data mata kuliah yang diambil</h3>
+                    </div>
+                    @foreach($ownedCourses as $course)
+                        <form action="{{ route('student.take-course.update',[$student,$course]) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="min-w-fit">
+                                <div class="flex flex-row gap-4 p-4">
+                                    <div class="flex flex-col w-1/4 gap-y-2">
+                                        <label for="name-{{ $course->id }}" class="text-sm md:text-base">Nama Mata
+                                            Kuliah</label>
+                                        <input disabled type="text" name="name" id="name-{{ $course->id }}"
+                                               value="{{ $course->name }}"
+                                               class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    </div>
+                                    <div class="flex flex-col w-1/5 gap-y-2">
+                                        <label for="credit-{{ $course->id }}" class="text-sm md:text-base">SKS</label>
+                                        <input disabled type="number" name="credit" id="credit-{{ $course->id }}"
+                                               value="{{ $course->credit }}"
+                                               class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    </div>
+                                    <div class="flex flex-col w-1/5 gap-y-2">
+                                        <label for="semester-{{ $course->id }}"
+                                               class="text-sm md:text-base">Semester</label>
+                                        <input disabled type="number" name="semester" id="semester-{{ $course->id }}"
+                                               value="{{ $course->pivot->semester }}"
+                                               data-input="{{ $course->id }}"
+                                               class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    </div>
+                                    <div class="flex flex-col w-1/5 gap-y-2">
+                                        <label for="grade-{{ $course->id }}" class="text-sm md:text-base">Nilai</label>
+                                        <input disabled type="text" name="grade" id="grade-{{ $course->id }}"
+                                               value="{{ $course->pivot->grade }}"
+                                               data-input="{{ $course->id }}"
+                                               class="placeholder:text-sm md:placeholder:text-base border rounded lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    </div>
+                                    <div class="flex flex-col w-1/5 justify-between">
+                                        <button onclick="editCourse('{{ $course->id }}')" type="button"
+                                                id="edit-{{ $course->id }}"
+                                                class="bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded text-sm px-2 py-1.5 text-center">
+                                            <i class="fas fa-edit"></i> Edit Data
+                                        </button>
+                                        <button id="delete-{{ $course->id }}" type="button"
+                                                class="text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded text-sm px-2 py-1.5 text-center">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                        <button id="cancel-{{ $course->id }}" onclick="cancelCourse('{{ $course->id }}')" type="button"
+                                                class="hidden text-white bg-gray-400 hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded text-sm px-2 py-1.5 text-center">
+                                            Batal
+                                        </button>
+                                        <button id="save-{{ $course->id }}" type="submit"
+                                                class="hidden text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-300 font-medium rounded text-sm px-2 py-1.5 text-center">
+                                            Simpan
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </form>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
-    <!-- This example requires Tailwind CSS v2.0+ -->
+
     <div id="modal" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true"
          style="display: none">
-        <!--
-          Background backdrop, show/hide based on modal state.
-
-          Entering: "ease-out duration-300"
-            From: "opacity-0"
-            To: "opacity-100"
-          Leaving: "ease-in duration-200"
-            From: "opacity-100"
-            To: "opacity-0"
-        -->
         <div id="modal-overlay" class="fixed inset-0 bg-zinc-800 bg-opacity-75 transition-opacity"></div>
-
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <!--
-                  Modal panel, show/hide based on modal state.
-
-                  Entering: "ease-out duration-300"
-                    From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    To: "opacity-100 translate-y-0 sm:scale-100"
-                  Leaving: "ease-in duration-200"
-                    From: "opacity-100 translate-y-0 sm:scale-100"
-                    To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                -->
                 <div id="modal-box"
                      class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -271,6 +283,42 @@
     </div>
 @endsection
 @section('insert-js')
+    <script>
+        function editCourse(id) {
+            const editButton = document.getElementById('edit-' + id);
+            const deleteButton = document.getElementById('delete-' + id);
+            const cancelButton = document.getElementById('cancel-' + id);
+            const saveButton = document.getElementById('save-' + id);
+            const input = document.querySelectorAll('[data-input="' + id + '"]');
+
+            editButton.classList.add('hidden');
+            deleteButton.classList.add('hidden');
+            cancelButton.classList.remove('hidden');
+            saveButton.classList.remove('hidden');
+
+            input.forEach((item) => {
+                item.removeAttribute('disabled');
+            });
+        }
+
+        function cancelCourse(id) {
+            const editButton = document.getElementById('edit-' + id);
+            const deleteButton = document.getElementById('delete-' + id);
+            const cancelButton = document.getElementById('cancel-' + id);
+            const saveButton = document.getElementById('save-' + id);
+            const input = document.querySelectorAll('[data-input="' + id + '"]');
+
+            editButton.classList.remove('hidden');
+            deleteButton.classList.remove('hidden');
+            cancelButton.classList.add('hidden');
+            saveButton.classList.add('hidden');
+
+            input.forEach((item) => {
+                item.setAttribute('disabled', true);
+            });
+        }
+
+    </script>
     <script>
         const MODAL = document.getElementById('modal');
         const MODAL_BOX = document.getElementById('modal-box');

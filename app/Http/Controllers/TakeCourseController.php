@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,5 +31,19 @@ class TakeCourseController extends Controller
             'semester' => $request->input('semester'),
         ]);
         return redirect()->route('student.show', $student)->with('success', 'Mata kuliah berhasil ditambahkan');
+    }
+
+    public function update(Request $request, Student $student,Course $course): RedirectResponse
+    {
+        $request->validate([
+            'grade' => 'nullable|string',
+            'semester' => 'required',
+        ]);
+
+        $student->courses()->updateExistingPivot($course, [
+            'grade' => $request->input('grade'),
+            'semester' => $request->input('semester'),
+        ]);
+        return redirect()->route('student.show', $student)->with('success', 'Data mata kuliah berhasil diubah');
     }
 }
