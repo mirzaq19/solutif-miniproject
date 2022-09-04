@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -20,10 +21,11 @@ class CourseController extends Controller
 
         if ($request->has('keyword')) {
             $courses = $courses->where('name', 'like', '%' . $request->query('keyword') . '%')
-                ->orWhere('code', 'like', '%' . $request->query('keyword') . '%');
+                ->orWhere('code', 'like', '%' . $request->query('keyword') . '%')
+                ->orWhere('credit', 'like', '%' . $request->query('keyword') . '%');
         }
 
-        $courses = $courses->paginate()->appends($request->query());
+        $courses = $courses->orderBy('name')->paginate()->appends($request->query());
 
         return view('dashboard.course.index', compact('courses'));
     }
@@ -31,22 +33,34 @@ class CourseController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('dashboard.course.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $request->validate([
+            'code' => 'required|unique:courses',
+            'name' => 'required|string',
+            'credit' => 'required|numeric|min:1|max:4',
+        ]);
+
+        $course = Course::create([
+            'name' => $request->input('name'),
+            'code' => $request->input('code'),
+            'credit' => $request->input('credit'),
+        ]);
+
+        return redirect()->route('course.index')->with('success', 'Mata kuliah berhasil ditambahkan.');
     }
 
     /**
@@ -74,7 +88,7 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
