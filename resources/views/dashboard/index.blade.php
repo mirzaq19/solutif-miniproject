@@ -55,7 +55,9 @@
     @if (Auth::user()->role == 'student')
         <div class="container min-h-screen lg:h-min mx-auto px-4 py-10">
             <h1 class="font-bold text-2xl my-6">Detail Mahasiswa</h1>
-
+            <a href="{{ route('dashboard.report',$student) }}" class="inline-block mb-6 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
+                <i class="fas fa-file-pdf"></i> Download Laporan
+            </a>
             <div class="flex flex-col gap-y-4">
                 <div class="rounded-lg border">
                     <div class="border-b flex p-4 bg-gray-50">
