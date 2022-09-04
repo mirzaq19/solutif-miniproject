@@ -113,11 +113,13 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Course $course
+     * @return RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Course $course): RedirectResponse
     {
-        //
+        $course->delete();
+        return redirect()->route('course.index')->with('success', 'Mata kuliah berhasil dihapus.');
     }
+
 }
