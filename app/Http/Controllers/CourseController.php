@@ -78,24 +78,36 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Course $course
+     * @return View
      */
-    public function edit($id)
+    public function edit(Course $course): View
     {
-        //
+        return view('dashboard.course.edit', compact('course'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
-     * @return Response
+     * @param Course $course
+     * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Course $course): RedirectResponse
     {
-        //
+        $request->validate([
+            'code' => 'required|unique:courses,code,' . $course->id,
+            'name' => 'required|string',
+            'credit' => 'required|numeric|min:1|max:4',
+        ]);
+
+        $course->update([
+            'name' => $request->input('name'),
+            'code' => $request->input('code'),
+            'credit' => $request->input('credit'),
+        ]);
+
+        return redirect()->route('course.index')->with('success', 'Mata kuliah berhasil diubah.');
     }
 
     /**
