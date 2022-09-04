@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('student')->group(function () {
             Route::post('{student}/take-course', [TakeCourseController::class, 'store'])->name('student.take-course.store');
             Route::put('{student}/take-course/{course}', [TakeCourseController::class, 'update'])->name('student.take-course.update');
+            Route::delete('{student}/take-course/{course}', [TakeCourseController::class, 'destroy'])->name('student.take-course.destroy');
         });
     });
 });

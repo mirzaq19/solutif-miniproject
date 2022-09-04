@@ -46,4 +46,10 @@ class TakeCourseController extends Controller
         ]);
         return redirect()->route('student.show', $student)->with('success', 'Data mata kuliah berhasil diubah');
     }
+
+    public function destroy(Student $student, Course $course): RedirectResponse
+    {
+        $student->courses()->detach($course);
+        return redirect()->route('student.show', $student)->with('success', 'Mata kuliah berhasil dihapus');
+    }
 }
