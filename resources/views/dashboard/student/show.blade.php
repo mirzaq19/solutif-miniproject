@@ -19,7 +19,8 @@
                 class="fas fa-arrow-left"></i> Kembali</a>
         <h1 class="font-bold text-2xl mt-6">Detail Mahasiswa</h1>
         <div class="my-4 flex flex-col text-center md:flex-row md:justify-end">
-            <a href="{{ route('student.report',$student) }}" class="inline-block focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
+            <a href="{{ route('student.report',$student) }}"
+               class="inline-block focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
                 <i class="fas fa-file-pdf"></i> Download Laporan
             </a>
             <a href="{{ route('student.edit',$student) }}"
@@ -176,14 +177,14 @@
                     </div>
                 </div>
                 <div class="overflow-x-auto">
-                    <div class="bg-gray-100 p-4">
-                        <h3 class="font-semibold">Data mata kuliah yang diambil</h3>
-                    </div>
-                    @foreach($ownedCourses as $course)
-                        <form action="{{ route('student.take-course.update',[$student,$course]) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="min-w-fit">
+                    <div class="min-w-fit">
+                        <div class="bg-gray-100 p-4">
+                            <h3 class="font-semibold">Data mata kuliah yang diambil</h3>
+                        </div>
+                        @foreach($ownedCourses as $course)
+                            <form action="{{ route('student.take-course.update',[$student,$course]) }}" method="POST">
+                                @csrf
+                                @method('PUT')
                                 <div class="flex flex-row gap-4 p-4">
                                     <div class="flex flex-col w-1/4 gap-y-2">
                                         <label for="name-{{ $course->id }}" class="text-sm md:text-base">Nama Mata
@@ -234,9 +235,9 @@
                                     </div>
                                 </div>
                                 <hr>
-                            </div>
-                        </form>
-                    @endforeach
+                            </form>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
