@@ -140,6 +140,20 @@
                         <div class="bg-gray-100 p-4">
                             <h3 class="font-semibold">Ambil mata kuliah baru</h3>
                         </div>
+                        @if (session('take-error'))
+                            <div class="flex p-4 mt-4 mx-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                                <i class="flex-shrink-0 inline w-5 h-5 mr-3 fas fa-info-circle"></i>
+                                <span class="sr-only">Danger</span>
+                                <div>
+                                    <span class="font-medium">Pastikan isian sudah diisi dengan benar:</span>
+                                    <ul class="mt-1.5 ml-4 text-red-700 list-disc list-inside">
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
                         <form action="{{ route('student.take-course.store',$student) }}" method="POST">
                             @csrf
                             <div class="flex flex-row gap-4 p-4">
@@ -173,8 +187,17 @@
                                     </button>
                                 </div>
                             </div>
-                            @if ($errors->any())
-                            <div class="flex p-4 mb-4 mx-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                        </form>
+                        <hr>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <div class="min-w-fit">
+                        <div class="bg-gray-100 p-4">
+                            <h3 class="font-semibold">Data mata kuliah yang diambil</h3>
+                        </div>
+                        @if (session('edit-take-error'))
+                            <div class="flex p-4 mt-4 mx-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
                                 <i class="flex-shrink-0 inline w-5 h-5 mr-3 fas fa-info-circle"></i>
                                 <span class="sr-only">Danger</span>
                                 <div>
@@ -186,16 +209,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            @endif
-                        </form>
-                        <hr>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <div class="min-w-fit">
-                        <div class="bg-gray-100 p-4">
-                            <h3 class="font-semibold">Data mata kuliah yang diambil</h3>
-                        </div>
+                        @endif
                         @foreach($ownedCourses as $course)
                             <form action="{{ route('student.take-course.update',[$student,$course]) }}" method="POST">
                                 @csrf
@@ -218,7 +232,7 @@
                                         <label for="semester-{{ $course->id }}"
                                                class="text-sm md:text-base">Semester</label>
                                         <input disabled type="number" name="semester" id="semester-{{ $course->id }}"
-                                               value="{{ $course->pivot->semester }}"
+                                               value="{{ $course->pivot->semester }}" min="1" max="14" required
                                                data-input="{{ $course->id }}"
                                                class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                                     </div>
