@@ -27,7 +27,8 @@
                class="w-full md:w-1/6 lg:w-1/12 focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i
                     class="fas fa-edit"></i> Edit</a>
             <button
-                onclick="openModal('{{ $student->id }}', '{{ $student->name }}')"
+                onclick="setModalStudent('{{ $student->id }}', '{{ $student->name }}')"
+                data-modal-target="#modal-delete-student"
                 class="w-full md:w-1/6 lg:w-1/12 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2">
                 <i class="fas fa-trash"></i> Hapus
             </button>
@@ -220,7 +221,8 @@
                                                 class="bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded text-sm px-2 py-1.5 text-center">
                                             <i class="fas fa-edit"></i> Edit Data
                                         </button>
-                                        <button id="delete-{{ $course->id }}" type="button" onclick="openModalCourse('{{ $student->id }}','{{ $course->id }}','{{ $course->name }}')"
+                                        <button id="delete-{{ $course->id }}" type="button" onclick="setModalCourse('{{ $student->id }}','{{ $course->id }}','{{ $course->name }}')"
+                                                data-modal-target="#modal-delete-course"
                                                 class="text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded text-sm px-2 py-1.5 text-center">
                                             <i class="fas fa-trash"></i> Hapus
                                         </button>
@@ -243,7 +245,7 @@
         </div>
     </div>
 
-    <div id="modal" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true"
+    <div id="modal-delete-student" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true"
          style="display: none">
         <div id="modal-overlay" class="fixed inset-0 bg-zinc-800 bg-opacity-75 transition-opacity"></div>
         <div class="fixed inset-0 z-10 overflow-y-auto">
@@ -261,7 +263,7 @@
                                     mahasiswa</h3>
                                 <div class="mt-2">
                                     <p class="text-sm text-gray-500">Apakah anda yakin ingin ingin menghapus data
-                                        mahasiswa "<span class="font-semibold" id="delete-name"></span>" ? Data akan
+                                        mahasiswa "<span class="font-semibold" id="delete-student-name"></span>" ? Data akan
                                         terhapus secara permanen</p>
                                 </div>
                             </div>
@@ -271,12 +273,12 @@
                         <form id="delete-student" action="" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button onclick="closeModal()" type="submit"
+                            <button type="submit"
                                     class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
                                 Hapus
                             </button>
                         </form>
-                        <button onclick="closeModal()" type="button"
+                        <button data-modal-close="#modal-delete-student" type="button"
                                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
@@ -285,12 +287,12 @@
             </div>
         </div>
     </div>
-    <div id="modal-course" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true"
+    <div id="modal-delete-course" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true"
          style="display: none">
-        <div id="modal-course-overlay" class="fixed inset-0 bg-zinc-800 bg-opacity-75 transition-opacity"></div>
+        <div id="modal-overlay" class="fixed inset-0 bg-zinc-800 bg-opacity-75 transition-opacity"></div>
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div id="modal-course-box"
+                <div id="modal-box"
                      class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
@@ -313,12 +315,12 @@
                         <form id="delete-course" action="" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button onclick="closeModalCourse()" type="submit"
+                            <button type="submit"
                                     class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
                                 Hapus
                             </button>
                         </form>
-                        <button onclick="closeModalCourse()" type="button"
+                        <button data-modal-close="#modal-delete-course" type="button"
                                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
@@ -361,83 +363,21 @@
             saveButton.classList.add('hidden');
 
             input.forEach((item) => {
-                item.setAttribute('disabled', true);
+                item.setAttribute('disabled', 'true');
             });
         }
 
-    </script>
-    <script>
-        const MODAL = document.getElementById('modal');
-        const MODAL_BOX = document.getElementById('modal-box');
-        const MODAL_OVERLAY = document.getElementById('modal-overlay');
-        const DELETE_STUDENT = document.getElementById('delete-student');
-        const DELETE_NAME = document.getElementById('delete-name');
-
-        function openModal(id, name) {
-            DELETE_STUDENT.action = '/dashboard/student/' + id;
-            DELETE_NAME.innerHTML = name;
-            MODAL.style.display = null;
-            MODAL_OVERLAY.style.display = null;
-            MODAL_BOX.style.display = null;
-            MODAL_BOX.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            MODAL_OVERLAY.classList.add('ease-out', 'duration-300', 'opacity-0');
-            setTimeout(() => {
-                MODAL_BOX.classList.remove('opacity-0', 'translate-y-4', 'sm:scale-95');
-                MODAL_BOX.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
-                MODAL_OVERLAY.classList.remove('opacity-0');
-                MODAL_OVERLAY.classList.add('opacity-100');
-                MODAL_BOX.classList.remove('opacity-100', 'translate-y-0', 'sm:translate-y-0', 'sm:scale-100');
-                MODAL_OVERLAY.classList.remove('ease-out', 'duration-300', 'opacity-100');
-            }, 200);
+        const MODAL_DELETE_STUDENT = new window.modal('modal-delete-student');
+        const setModalStudent = (id, name) => {
+            document.getElementById('delete-student').action = '/dashboard/student/' + id;
+            document.getElementById('delete-student-name').innerText = name;
         }
 
-        function closeModal() {
-            MODAL_BOX.classList.add('ease-in', 'duration-200', 'opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            MODAL_OVERLAY.classList.add('ease-in', 'duration-200', 'opacity-0');
-            setTimeout(() => {
-                MODAL_BOX.classList.remove('ease-in', 'duration-200', 'opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-                MODAL_OVERLAY.classList.remove('ease-in', 'duration-200', 'opacity-0');
-                MODAL.style.display = 'none';
-                MODAL_OVERLAY.style.display = 'none';
-                MODAL_BOX.style.display = 'none';
-            }, 200);
-        }
-    </script>
-    <script>
-        const MODAL_COURSE = document.getElementById('modal-course');
-        const MODAL_COURSE_BOX = document.getElementById('modal-course-box');
-        const MODAL_COURSE_OVERLAY = document.getElementById('modal-course-overlay');
-        const DELETE_COURSE = document.getElementById('delete-course');
-        const DELETE_COURSE_NAME = document.getElementById('delete-course-name');
-
-        function openModalCourse(student, course, name) {
-            DELETE_COURSE.action = '/dashboard/student/' + student + '/take-course/' + course;
-            DELETE_COURSE_NAME.innerHTML = name;
-            MODAL_COURSE.style.display = null;
-            MODAL_COURSE_OVERLAY.style.display = null;
-            MODAL_COURSE_BOX.style.display = null;
-            MODAL_COURSE_BOX.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            MODAL_COURSE_OVERLAY.classList.add('ease-out', 'duration-300', 'opacity-0');
-            setTimeout(() => {
-                MODAL_COURSE_BOX.classList.remove('opacity-0', 'translate-y-4', 'sm:scale-95');
-                MODAL_COURSE_BOX.classList.add('opacity-100', 'translate-y-0', 'sm:scale-100');
-                MODAL_COURSE_OVERLAY.classList.remove('opacity-0');
-                MODAL_COURSE_OVERLAY.classList.add('opacity-100');
-                MODAL_COURSE_BOX.classList.remove('opacity-100', 'translate-y-0', 'sm:translate-y-0', 'sm:scale-100');
-                MODAL_COURSE_OVERLAY.classList.remove('ease-out', 'duration-300', 'opacity-100');
-            }, 200);
+        const MODAL_DELETE_COURSE = new window.modal('modal-delete-course');
+        const setModalCourse = (student,course,name) => {
+            document.getElementById('delete-course').action = '/dashboard/student/' + student + '/take-course/' + course;
+            document.getElementById('delete-course-name').innerHTML = name;
         }
 
-        function closeModalCourse() {
-            MODAL_COURSE_BOX.classList.add('ease-in', 'duration-200', 'opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-            MODAL_COURSE_OVERLAY.classList.add('ease-in', 'duration-200', 'opacity-0');
-            setTimeout(() => {
-                MODAL_COURSE_BOX.classList.remove('ease-in', 'duration-200', 'opacity-0', 'translate-y-4', 'sm:translate-y-0', 'sm:scale-95');
-                MODAL_COURSE_OVERLAY.classList.remove('ease-in', 'duration-200', 'opacity-0');
-                MODAL_COURSE.style.display = 'none';
-                MODAL_COURSE_OVERLAY.style.display = 'none';
-                MODAL_COURSE_BOX.style.display = 'none';
-            }, 200);
-        }
     </script>
 @endsection
