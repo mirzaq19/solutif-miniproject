@@ -18,8 +18,15 @@ class TakeCourseController extends Controller
     {
         $request->validate([
             'course_id' => 'required',
-            'grade' => 'nullable|string',
-            'semester' => 'required',
+            'grade' => 'nullable|string|in:A,AB,B,BC,C,D,E',
+            'semester' => 'required|integer|min:1|max:14',
+        ],[
+            'course_id.required' => 'Silahkan pilih mata kuliah terlebih dahulu',
+            'semester.required' => 'Isian semester tidak boleh kosong',
+            'semester.integer' => 'Isian semester harus berupa angka',
+            'semester.min' => 'Isian semester minimal 1',
+            'semester.max' => 'Isian semester maksimal 14',
+            'grade.in' => 'Nilai yang anda masukkan tidak valid, pastikan anda memasukkan nilai A, AB, B, BC, C, D, E',
         ]);
 
         if ($student->courses()->where('course_id', $request->input('course_id'))->exists()) {

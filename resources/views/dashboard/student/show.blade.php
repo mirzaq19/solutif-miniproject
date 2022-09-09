@@ -145,7 +145,7 @@
                             <div class="flex flex-row gap-4 p-4">
                                 <div class="flex flex-col w-1/4 gap-y-2">
                                     <label for="course_id" class="text-sm md:text-base">Mata kuliah</label>
-                                    <select name="course_id" id="course_id"
+                                    <select name="course_id" id="course_id" required
                                             class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                                         <option value="" disabled selected>Pilih mata kuliah</option>
                                         @foreach ($courses as $course)
@@ -158,7 +158,7 @@
                                 </div>
                                 <div class="flex flex-col w-1/4 gap-y-2">
                                     <label for="semester" class="text-sm md:text-base">Semester</label>
-                                    <input type="number" name="semester" id="semester"
+                                    <input type="number" name="semester" id="semester" required min="1" max="14"
                                            class="placeholder:text-sm md:placeholder:text-base border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                                 </div>
                                 <div class="flex flex-col w-1/4 gap-y-2">
@@ -173,6 +173,20 @@
                                     </button>
                                 </div>
                             </div>
+                            @if ($errors->any())
+                            <div class="flex p-4 mb-4 mx-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                                <i class="flex-shrink-0 inline w-5 h-5 mr-3 fas fa-info-circle"></i>
+                                <span class="sr-only">Danger</span>
+                                <div>
+                                    <span class="font-medium">Pastikan isian sudah diisi dengan benar:</span>
+                                    <ul class="mt-1.5 ml-4 text-red-700 list-disc list-inside">
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                            @endif
                         </form>
                         <hr>
                     </div>
