@@ -7,6 +7,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CourseController extends Controller
 {
@@ -18,16 +20,37 @@ class CourseController extends Controller
      */
     public function index(Request $request): View
     {
-        $courses = Course::query();
-
-        if ($request->has('keyword')) {
-            $courses = $courses->where('name', 'like', '%' . $request->query('keyword') . '%')
-                ->orWhere('code', 'like', '%' . $request->query('keyword') . '%')
-                ->orWhere('credit', 'like', '%' . $request->query('keyword') . '%');
+        $page = $request->query('page') ?? 1;
+        $keyword = $request->query('keyword') ?? '';
+        if (Redis::exists('courses:page:' . $page . ':keyword:' . $keyword)) {
+            $courses = json_decode(Redis::get('courses:page:' . $page . ':keyword:' . $keyword));
+            $courses = new LengthAwarePaginator($courses->data, $courses->total, $courses->per_page, $courses->current_page, [
+                'path' => $courses->path, 
+            ]);
+            if ($request->has('keyword')){
+                $courses->appends('keyword', $request->query('keyword'));
+            }
+            if (Redis::ttl('courses:page:' . $page . ':keyword:' . $keyword) == -1) {
+                $courses = Course::query();
+                if ($request->has('keyword')) {
+                    $courses = $courses->where('name', 'like', '%' . $request->query('keyword') . '%')
+                        ->orWhere('code', 'like', '%' . $request->query('keyword') . '%')
+                        ->orWhere('credit', 'like', '%' . $request->query('keyword') . '%');
+                }
+                $courses = $courses->orderBy('name')->paginate()->appends($request->query());
+                Redis::set('courses:page:' . $page . ':keyword:' . $keyword, json_encode($courses), 'EX', 120);
+            }
+        } else {
+            $courses = Course::query();
+            if ($request->has('keyword')) {
+                $courses = $courses->where('name', 'like', '%' . $request->query('keyword') . '%')
+                    ->orWhere('code', 'like', '%' . $request->query('keyword') . '%')
+                    ->orWhere('credit', 'like', '%' . $request->query('keyword') . '%');
+            }
+            $courses = $courses->orderBy('name')->paginate()->appends($request->query());
+            Redis::set('courses:page:' . $page . ':keyword:' . $keyword, json_encode($courses), 'EX', 120);
         }
-
-        $courses = $courses->orderBy('name')->paginate()->appends($request->query());
-
+        
         return view('dashboard.course.index', compact('courses'));
     }
 
