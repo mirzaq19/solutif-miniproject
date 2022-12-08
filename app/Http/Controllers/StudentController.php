@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class StudentController extends Controller
 {
@@ -39,17 +40,41 @@ class StudentController extends Controller
      */
     public function index(Request $request): View
     {
-        $students = Student::query();
+        $page = $request->query('page') ?? 1;
+        $keyword = $request->query('keyword') ?? '';
 
-        if ($request->has('keyword')) {
-            $students = $students->where('name', 'like', '%' . $request->query('keyword') . '%')
-            ->orWhere('nim', 'like', '%' . $request->query('keyword') . '%')
-            ->orWhere('address', 'like', '%' . $request->query('keyword') . '%')
-            ->orWhere('major', 'like', '%' . $request->query('keyword') . '%')
-            ->orWhere('year', 'like', '%' . $request->query('keyword') . '%');
+        if (Redis::exists('students:page:' . $page . ':keyword:' . $keyword)) {
+            $students = json_decode(Redis::get('students:page:' . $page . ':keyword:' . $keyword));
+            $students = new LengthAwarePaginator($students->data, $students->total, $students->per_page, $students->current_page, [
+                'path' => $students->path, 
+            ]);
+            if ($request->has('keyword')){
+                $students->appends('keyword', $request->query('keyword'));
+            }
+            if (Redis::ttl('students:page:' . $page . ':keyword:' . $keyword) == -1) {
+                $students = Student::query();
+                if ($request->has('keyword')) {
+                    $students = $students->where('name', 'like', '%' . $request->query('keyword') . '%')
+                    ->orWhere('nim', 'like', '%' . $request->query('keyword') . '%')
+                    ->orWhere('address', 'like', '%' . $request->query('keyword') . '%')
+                    ->orWhere('major', 'like', '%' . $request->query('keyword') . '%')
+                    ->orWhere('year', 'like', '%' . $request->query('keyword') . '%');
+                }
+                $students = $students->paginate()->appends($request->query());
+                Redis::set('students:page:' . $page . ':keyword:' . $keyword, json_encode($students), 'EX', 120);
+            }
+        } else {
+            $students = Student::query();
+            if ($request->has('keyword')) {
+                $students = $students->where('name', 'like', '%' . $request->query('keyword') . '%')
+                ->orWhere('nim', 'like', '%' . $request->query('keyword') . '%')
+                ->orWhere('address', 'like', '%' . $request->query('keyword') . '%')
+                ->orWhere('major', 'like', '%' . $request->query('keyword') . '%')
+                ->orWhere('year', 'like', '%' . $request->query('keyword') . '%');
+            }
+            $students = $students->paginate()->appends($request->query());
+            Redis::set('students:page:' . $page . ':keyword:' . $keyword, json_encode($students), 'EX', 120);
         }
-
-        $students = $students->paginate()->appends($request->query());
 
         return view('dashboard.student.index', compact('students'));
     }
