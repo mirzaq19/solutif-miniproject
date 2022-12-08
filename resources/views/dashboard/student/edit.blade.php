@@ -18,7 +18,7 @@
            class="inline-block text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i
                 class="fas fa-arrow-left"></i> Kembali</a>
         <h1 class="font-bold text-2xl mt-6">Edit Mahasiswa</h1>
-        <form action="{{ route('student.update',$student) }}" method="POST">
+        <form action="{{ route('student.update',$student->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="mt-8 flex flex-col gap-y-4">

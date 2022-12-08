@@ -19,11 +19,11 @@
                 class="fas fa-arrow-left"></i> Kembali</a>
         <h1 class="font-bold text-2xl mt-6">Detail Mahasiswa</h1>
         <div class="my-4 flex flex-col text-center md:flex-row md:justify-end">
-            <a href="{{ route('student.report',$student) }}"
+            <a href="{{ route('student.report',$student->id) }}"
                class="inline-block focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
                 <i class="fas fa-file-pdf"></i> Download Laporan
             </a>
-            <a href="{{ route('student.edit',$student) }}"
+            <a href="{{ route('student.edit',$student->id) }}"
                class="w-full md:w-1/6 lg:w-1/12 focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i
                     class="fas fa-edit"></i> Edit</a>
             <button
@@ -154,7 +154,7 @@
                                 </div>
                             </div>
                         @endif
-                        <form action="{{ route('student.take-course.store',$student) }}" method="POST">
+                        <form action="{{ route('student.take-course.store',$student->id) }}" method="POST">
                             @csrf
                             <div class="flex flex-row gap-4 p-4">
                                 <div class="flex flex-col w-1/4 gap-y-2">
@@ -211,7 +211,7 @@
                             </div>
                         @endif
                         @foreach($ownedCourses as $course)
-                            <form action="{{ route('student.take-course.update',[$student,$course]) }}" method="POST">
+                            <form action="{{ route('student.take-course.update',[$student->id,$course->id]) }}" method="POST">
                                 @csrf
                                 @method('PUT')
                                 <div class="flex flex-row gap-4 p-4">

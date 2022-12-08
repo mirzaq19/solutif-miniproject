@@ -142,22 +142,27 @@ class StudentController extends Controller
      * @param Student $student
      * @return View
      */
-    public function show(Student $student): View
+    public function show(string $student_id): View
     {
-        $student->load('user','courses');
-
-        if (Redis::exists('students:'. $student->id .':notcourses')) {
-            $courses = json_decode(Redis::get('students:'. $student->id .':notcourses'));
+        if (Redis::exists('student:'. $student_id)) {
+            $student = json_decode(Redis::get('student:'. $student_id));
         } else {
-            $courses = Course::whereNotIn('id', $student->courses->pluck('id'))->get();
-            Redis::set('students:'. $student->id .':notcourses', $courses, 'EX', 60);
+            $student = Student::where('id',$student_id)->with('user','courses')->first();
+            Redis::set('student:'. $student_id, $student, 'EX', 60);
         }
 
-        if (Redis::exists('students:'. $student->id .':courses')) {
-            $ownedCourses = json_decode(Redis::get('students:'. $student->id .':courses'));
+        if (Redis::exists('student:'. $student->id .':notcourses')) {
+            $courses = json_decode(Redis::get('student:'. $student->id .':notcourses'));
+        } else {
+            $courses = Course::whereNotIn('id', $student->courses->pluck('id'))->get();
+            Redis::set('student:'. $student->id .':notcourses', $courses, 'EX', 60);
+        }
+
+        if (Redis::exists('student:'. $student->id .':courses')) {
+            $ownedCourses = json_decode(Redis::get('student:'. $student->id .':courses'));
         } else {
             $ownedCourses = $student->courses->sortBy('pivot.semester');
-            Redis::set('students:'. $student->id .':courses', $ownedCourses, 'EX', 60);
+            Redis::set('student:'. $student->id .':courses', $ownedCourses, 'EX', 60);
         }
         return view('dashboard.student.show', compact('student','courses','ownedCourses'));
     }
@@ -168,9 +173,14 @@ class StudentController extends Controller
      * @param Student $student
      * @return View
      */
-    public function edit(Student $student): View
+    public function edit(string $student_id): View
     {
-        $student->load('user');
+        if (Redis::exists('student:'. $student_id)) {
+            $student = json_decode(Redis::get('student:'. $student_id));
+        } else {
+            $student = Student::where('id',$student_id)->with('user')->first();
+            Redis::set('student:'. $student_id, $student, 'EX', 60);
+        }
         return view('dashboard.student.edit', compact('student'));
     }
 
@@ -211,6 +221,7 @@ class StudentController extends Controller
             ]);
 
             DB::commit();
+            Redis::del('student:'. $student->id);
             return redirect()->route('student.index')->with('success', 'Data mahasiswa berhasil diubah');
         } catch (Exception $e) {
             DB::rollBack();
@@ -230,7 +241,10 @@ class StudentController extends Controller
         try {
             $user = User::find($student->user_id);
             $user->delete();
-
+            Redis::del('student:'. $student->id);
+            Redis::del('student:'. $student->id .':notcourses');
+            Redis::del('student:'. $student->id .':courses');
+            Redis::del(Redis::keys('students:*'));
             DB::commit();
             return redirect()->route('student.index')->with('success', 'Data mahasiswa berhasil dihapus');
         } catch (Exception $e) {
