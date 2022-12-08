@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 
 class StudentController extends Controller
 {
@@ -119,8 +120,20 @@ class StudentController extends Controller
     public function show(Student $student): View
     {
         $student->load('user','courses');
-        $courses = Course::whereNotIn('id', $student->courses->pluck('id'))->get();
-        $ownedCourses = $student->courses->sortBy('pivot.semester');
+
+        if (Redis::exists('students:'. $student->id .':notcourses')) {
+            $courses = json_decode(Redis::get('students:'. $student->id .':notcourses'));
+        } else {
+            $courses = Course::whereNotIn('id', $student->courses->pluck('id'))->get();
+            Redis::set('students:'. $student->id .':notcourses', $courses, 'EX', 60);
+        }
+
+        if (Redis::exists('students:'. $student->id .':courses')) {
+            $ownedCourses = json_decode(Redis::get('students:'. $student->id .':courses'));
+        } else {
+            $ownedCourses = $student->courses->sortBy('pivot.semester');
+            Redis::set('students:'. $student->id .':courses', $ownedCourses, 'EX', 60);
+        }
         return view('dashboard.student.show', compact('student','courses','ownedCourses'));
     }
 
