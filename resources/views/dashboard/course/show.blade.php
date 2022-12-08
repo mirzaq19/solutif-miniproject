@@ -17,7 +17,7 @@
         <a href="{{route('course.index')}}"  class="inline-block text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="fas fa-arrow-left"></i> Kembali</a>
         <h1 class="font-bold text-2xl mt-6">Detail Mata Kuliah</h1>
         <div class="my-4 flex flex-col text-center md:flex-row md:justify-end">
-            <a href="{{ route('course.edit',$course) }}"
+            <a href="{{ route('course.edit',$course->id) }}"
                class="w-full md:w-1/6 lg:w-1/12 focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 rounded-lg text-sm px-3 py-2 mr-2 mb-2"><i
                     class="fas fa-edit"></i> Edit</a>
             <button

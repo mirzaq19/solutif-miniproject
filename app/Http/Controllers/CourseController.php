@@ -93,8 +93,18 @@ class CourseController extends Controller
      * @param Course $course
      * @return View
      */
-    public function show(Course $course): View
+    public function show(string $course_id): View
     {
+        if (Redis::exists('course:' . $course_id)) {
+            $course = json_decode(Redis::get('course:' . $course_id));
+            if (Redis::ttl('course:' . $course_id) == -1) {
+                $course = Course::findOrFail($course_id);
+                Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
+            }
+        } else {
+            $course = Course::findOrFail($course_id);
+            Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
+        }
         return view('dashboard.course.show', compact('course'));
     }
 
@@ -104,8 +114,18 @@ class CourseController extends Controller
      * @param Course $course
      * @return View
      */
-    public function edit(Course $course): View
+    public function edit(string $course_id): View
     {
+        if (Redis::exists('course:' . $course_id)) {
+            $course = json_decode(Redis::get('course:' . $course_id));
+            if (Redis::ttl('course:' . $course_id) == -1) {
+                $course = Course::findOrFail($course_id);
+                Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
+            }
+        } else {
+            $course = Course::findOrFail($course_id);
+            Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
+        }
         return view('dashboard.course.edit', compact('course'));
     }
 
@@ -130,6 +150,8 @@ class CourseController extends Controller
             'credit' => $request->input('credit'),
         ]);
 
+        Redis::del('course:' . $course->id);
+
         return redirect()->route('course.index')->with('success', 'Mata kuliah berhasil diubah.');
     }
 
@@ -142,6 +164,7 @@ class CourseController extends Controller
     public function destroy(Course $course): RedirectResponse
     {
         $course->delete();
+        Redis::del('course:' . $course->id);
         return redirect()->route('course.index')->with('success', 'Mata kuliah berhasil dihapus.');
     }
 
