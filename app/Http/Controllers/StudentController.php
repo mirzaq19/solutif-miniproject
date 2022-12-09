@@ -145,21 +145,21 @@ class StudentController extends Controller
     public function show(Student $student): View
     {
         if (!Redis::exists('student:'. $student->id)) {
-            Redis::set('student:'. $student->id, $student, 'EX', 20);
+            Redis::set('student:'. $student->id, $student, 'EX', 120);
         }
 
         if (Redis::exists('student:'. $student->id .':notcourses')) {
             $courses = json_decode(Redis::get('student:'. $student->id .':notcourses'));
         } else {
             $courses = Course::whereNotIn('id', $student->courses->pluck('id'))->get();
-            Redis::set('student:'. $student->id .':notcourses', $courses, 'EX', 20);
+            Redis::set('student:'. $student->id .':notcourses', $courses, 'EX', 120);
         }
 
         if (Redis::exists('student:'. $student->id .':courses')) {
             $ownedCourses = json_decode(Redis::get('student:'. $student->id .':courses'));
         } else {
             $ownedCourses = $student->courses->sortBy('pivot.semester');
-            Redis::set('student:'. $student->id .':courses', $ownedCourses, 'EX', 20);
+            Redis::set('student:'. $student->id .':courses', $ownedCourses, 'EX', 120);
         }
         return view('dashboard.student.show', compact('student','courses','ownedCourses'));
     }
