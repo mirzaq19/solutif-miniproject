@@ -144,11 +144,8 @@ class StudentController extends Controller
      */
     public function show(Student $student): View
     {
-        if (Redis::exists('student:'. $student->id)) {
-            // $student = json_decode(Redis::get('student:'. $student->id));
-        } else {
-            $student = Student::where('id',$student->id)->with('user','courses')->first();
-            Redis::set('student:'. $student->id, $student, 'EX', 60);
+        if (!Redis::exists('student:'. $student->id)) {
+            Redis::set('student:'. $student->id, $student, 'EX', 20);
         }
 
         if (Redis::exists('student:'. $student->id .':notcourses')) {
@@ -175,10 +172,8 @@ class StudentController extends Controller
      */
     public function edit(Student $student): View
     {
-        if (Redis::exists('student:'. $student->id)) {
+        if (!Redis::exists('student:'. $student->id)) {
             // $student = json_decode(Redis::get('student:'. $student->id));
-        } else {
-            $student = Student::where('id',$student->id)->with('user')->first();
             Redis::set('student:'. $student->id, $student, 'EX', 20);
         }
         return view('dashboard.student.edit', compact('student'));
