@@ -38,7 +38,7 @@ class CourseController extends Controller
                         ->orWhere('credit', 'like', '%' . $request->query('keyword') . '%');
                 }
                 $courses = $courses->orderBy('name')->paginate()->appends($request->query());
-                Redis::set('courses:page:' . $page . ':keyword:' . $keyword, json_encode($courses), 'EX', 120);
+                Redis::set('courses:page:' . $page . ':keyword:' . $keyword, json_encode($courses), 'EX', 20);
             }
         } else {
             $courses = Course::query();
@@ -48,7 +48,7 @@ class CourseController extends Controller
                     ->orWhere('credit', 'like', '%' . $request->query('keyword') . '%');
             }
             $courses = $courses->orderBy('name')->paginate()->appends($request->query());
-            Redis::set('courses:page:' . $page . ':keyword:' . $keyword, json_encode($courses), 'EX', 120);
+            Redis::set('courses:page:' . $page . ':keyword:' . $keyword, json_encode($courses), 'EX', 20);
         }
         
         return view('dashboard.course.index', compact('courses'));
@@ -93,17 +93,10 @@ class CourseController extends Controller
      * @param Course $course
      * @return View
      */
-    public function show(string $course_id): View
+    public function show(Course $course): View
     {
-        if (Redis::exists('course:' . $course_id)) {
-            $course = json_decode(Redis::get('course:' . $course_id));
-            if (Redis::ttl('course:' . $course_id) == -1) {
-                $course = Course::findOrFail($course_id);
-                Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
-            }
-        } else {
-            $course = Course::findOrFail($course_id);
-            Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
+        if (!Redis::exists('course:' . $course->id)) {
+            Redis::set('course:' . $course->id, json_encode($course), 'EX', 120);
         }
         return view('dashboard.course.show', compact('course'));
     }
@@ -114,17 +107,10 @@ class CourseController extends Controller
      * @param Course $course
      * @return View
      */
-    public function edit(string $course_id): View
+    public function edit(Course $course): View
     {
-        if (Redis::exists('course:' . $course_id)) {
-            $course = json_decode(Redis::get('course:' . $course_id));
-            if (Redis::ttl('course:' . $course_id) == -1) {
-                $course = Course::findOrFail($course_id);
-                Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
-            }
-        } else {
-            $course = Course::findOrFail($course_id);
-            Redis::set('course:' . $course_id, json_encode($course), 'EX', 120);
+        if (!Redis::exists('course:' . $course->id)) {
+            Redis::set('course:' . $course->id, json_encode($course), 'EX', 120);
         }
         return view('dashboard.course.edit', compact('course'));
     }
